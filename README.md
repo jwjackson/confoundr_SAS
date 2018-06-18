@@ -54,6 +54,12 @@ To read in the macros, use the following code:
 
 A PDF manual can be downloaded from the main directory. We are also developing a vignette. The draft vignette code (posted) is called 'selectionbias.sas' and is to be used with the 'catie_sas.csv' file, a simulated dataset (not yet posted).
 
-For questions please [contact me](https://www.jhsph.edu/faculty/directory/profile/3410/john-w-jackson).
+For questions please contact one of us:
 
-John W. Jackson, ScD
+John W. Jackson, ScD, Assistant Professor, Departments of Epidemiology and Mental Health, Johns Hopkins Bloomberg School of Public Health, john.jackson@jhu.edu, [Faculty Profile](https://www.jhsph.edu/faculty/directory/profile/3410/john-w-jackson) 
+
+Erin Schnellinger, MS, Graduate Student, Graduate Group in Epidemiology and Biostatistics, University of Pennsylvania, eschnel@pennmedicine.upenn.edu
+
+
+
+* Please note that the catie_sas.csv dataset is a completely simulated dataset losedly based on the [Clinical Antipsychotic Trials of Intervention Effectiveness (CATIE) study](https://www.ncbi.nlm.nih.gov/pubmed/16172203) *
