@@ -23,22 +23,22 @@ The tools can accommodate:
 * Data that are not time-indexed.
 * Data that are supplied in "wide" or "long" format.
 
-To read in the macros, use the following code:
+To read in the macros, adapt the following code:
 
 ```
 ** Macro options **;
    options minoperator;
 
 ** Assign a fileref to each confoundr macro **;
-   filename widedef  "/folders/myfolders/CovariateBalanceProject/confoundr_macros/widen.sas";
-   filename hist1def "/folders/myfolders/CovariateBalanceProject/confoundr_macros/makehistory_one.sas";
-   filename hist2def "/folders/myfolders/CovariateBalanceProject/confoundr_macros/makehistory_two.sas";
-   filename longdef  "/folders/myfolders/CovariateBalanceProject/confoundr_macros/lengthen.sas";
-   filename omitdef  "/folders/myfolders/CovariateBalanceProject/confoundr_macros/omit_history.sas";
-   filename balncdef "/folders/myfolders/CovariateBalanceProject/confoundr_macros/balance.sas";
-   filename applyscp "/folders/myfolders/CovariateBalanceProject/confoundr_macros/apply_scope.sas";
-   filename plotdef  "/folders/myfolders/CovariateBalanceProject/confoundr_macros/makeplot.sas";
-   filename diagnos  "/folders/myfolders/CovariateBalanceProject/confoundr_macros/diagnose.sas";
+   filename widedef  "/folders/myfolders/confoundr_macros/widen.sas";
+   filename hist1def "/folders/myfolders/confoundr_macros/makehistory_one.sas";
+   filename hist2def "/folders/myfolders/confoundr_macros/makehistory_two.sas";
+   filename longdef  "/folders/myfolders/confoundr_macros/lengthen.sas";
+   filename omitdef  "/folders/myfolders/confoundr_macros/omit_history.sas";
+   filename balncdef "/folders/myfolders/confoundr_macros/balance.sas";
+   filename applyscp "/folders/myfolders/confoundr_macros/apply_scope.sas";
+   filename plotdef  "/folders/myfolders/confoundr_macros/makeplot.sas";
+   filename diagnos  "/folders/myfolders/confoundr_macros/diagnose.sas";
 
 ** Include the confoundr macros **;
   %include widedef;
