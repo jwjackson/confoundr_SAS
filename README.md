@@ -52,7 +52,7 @@ To read in the macros, use the following code:
   %include diagnos;
 ```
 
-A PDF manual can be downloaded from the main directory. We are also developing a vignette. A .sas file 'selectionbias.sas' can be used to run the vignette with the 'catie_sas.csv' file, both available for download. 
+A PDF manual can be downloaded from the main directory. We are also developing a vignette. The draft vignette code (posted) is called 'selectionbias.sas' and is to be used with the 'catie_sas.csv' file, a simulated dataset (not yet posted).
 
 For questions please [contact me](https://www.jhsph.edu/faculty/directory/profile/3410/john-w-jackson).
 
