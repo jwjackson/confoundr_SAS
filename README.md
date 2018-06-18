@@ -1,4 +1,4 @@
-# confoundr
+# confoundr SAS macros
 
 INTRODUCTION
 
