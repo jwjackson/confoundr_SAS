@@ -1,6 +1,6 @@
 # confoundr SAS macros
 
-                                * * * NOTICE: CURRENTLY TESTING AND DE-BUGGING * * * 
+                             * * * NOTICE: CURRENTLY TESTING AND DE-BUGGING * * * 
   
 INTRODUCTION
 
