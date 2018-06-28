@@ -62,4 +62,4 @@ Erin Schnellinger, MS, Graduate Student, Graduate Group in Epidemiology and Bios
 
 
 
-* Please note that the catie_sas.csv dataset is a completely simulated dataset losedly based on the [Clinical Antipsychotic Trials of Intervention Effectiveness (CATIE) study](https://www.ncbi.nlm.nih.gov/pubmed/16172203) *
+* Please note that the catie_sas.csv dataset is a completely simulated dataset loosely based on the [Clinical Antipsychotic Trials of Intervention Effectiveness (CATIE) study](https://www.ncbi.nlm.nih.gov/pubmed/16172203) *
