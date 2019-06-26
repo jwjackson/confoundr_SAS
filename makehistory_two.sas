@@ -3,6 +3,12 @@
 
 /* "Make History Two" Macro */
 
+/* Last Updated: 26 June 2019 */
+/* Fixed concatenation issue with history variable */
+
+
+/* Macro successfully passed testMakeHistoryTwo tests on 26 June 2019 */
+
 
 ** Start the makehistory_two macro **;
 
@@ -418,18 +424,18 @@
           length &name_history_a &name_history_b $ &&hLength;  /* Set the length of h_a, and h_z equal to "hLength" */
 
 
-	      %do i=1 %to &&numT-1;  /* To number of occasions minus 1 */
+	      %do i=1 %to &&numT;  /* To number of occasions */
 	          if first.&id. then do;  /* First exposure time */
-                 &name_history_a = 'H'||strip(&group.); 
-                 &name_history_b = 'H'||strip(&group.)||&exposure_a.char;
+                 &name_history_a = strip(&group.)||'H'; 
+                 &name_history_b = strip(&group.)||'H'||&exposure_a.char;
               end;
 		      
 		      /* Remaining exposure times, concatenated in reverse order */
               %LET j = %eval(&&i - 1);  /* Get lag variables from previous times only */
              
 	          %if &&i>1 %then %do;
-	              if time_actual=&&i then &name_history_a = 'H'||strip(&group.)||CATT(OF &exposure_a.&exposure_b.lagc&&j-&exposure_a.&exposure_b.lagc1);
-			      if time_actual=&&i then &name_history_b = 'H'||strip(&group.)||CATT(OF &exposure_a.&exposure_b.lagc&&j-&exposure_a.&exposure_b.lagc1, &exposure_a.char);
+	              if time_actual=&&i then &name_history_a = strip(&group.)||'H'||CATT(OF &exposure_a.&exposure_b.lagc&&j-&exposure_a.&exposure_b.lagc1);
+			      if time_actual=&&i then &name_history_b = strip(&group.)||'H'||CATT(OF &exposure_a.&exposure_b.lagc&&j-&exposure_a.&exposure_b.lagc1, &exposure_a.char);
 	          %end;	          
 	      %end;
        run;
@@ -445,7 +451,7 @@
           length &name_history_a &name_history_b $ &&hLength;  /* Set the length of h_a, and h_z equal to "hLength" */
 
 
-	      %do i=1 %to &&numT-1;  /* To number of occasions minus 1 */
+	      %do i=1 %to &&numT;  /* To number of occasions minus 1 */
 	          if first.&id. then do;  /* First exposure time */
                  &name_history_a = 'H'; 
                  &name_history_b = 'H'||&exposure_a.char;
@@ -554,7 +560,7 @@
 
    ** Remove all intermediate data sets from the WORK library **;
 
-     /*  %if &output. ne  AND &output. ne NULL %then %do;
+       %if &output. ne  AND &output. ne NULL %then %do;
            proc datasets library=work nolist;
 	          save &input. &output. &&save.;
 	       run;
@@ -566,7 +572,7 @@
 	          save &input. &input._with_History &&save.;
 	       run;
 	       quit;
-       %end; */
+       %end;
 
 
 

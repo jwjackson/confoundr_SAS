@@ -830,7 +830,7 @@ data df_twdn_h_hsg_1;
    set df_twdn_hg(keep=hsg_1);
 run;
 
-data df_twdn_hatwog_1(rename=(hstwog_1=hsg_1));
+data df_twdn_hstwog_1(rename=(hstwog_1=hsg_1));
    set df_twdn(keep=hstwog_1);
 run;
 

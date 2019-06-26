@@ -3,6 +3,12 @@
 
 /* "Make History One" Macro */
 
+/* Last Updated: 26 June 2019 */
+/* Fixed concatenation issue with history variable */
+
+
+/* Macro successfully passed testMakeHistoryOne tests on 26 June 2019 */
+
 
 ** Start the makehistory_one macro **;
 
@@ -321,14 +327,14 @@
           retain &name_history.;
           length &name_history. $ &&hLength;  /* Set the length of h equal to "hLength" */
 
-	      %do i=1 %to &&numT-1;  /* To number of occasions minus 1 */
-	          if first.&id. then &name_history. = 'H'||strip(&group.);   /* First exposure time */
+	      %do i=1 %to &&numT;  /* To number of occasions */
+	          if first.&id. then &name_history. = strip(&group.)||'H';   /* First exposure time */
 	         
 	          /* Remaining exposure times, concatenated in reverse order */
               %LET j = %eval(&&i - 1);  /* Get lag variables from previous times only */
              
 	          %if &&i>1 %then %do;
-	             if time_actual=&&i then &name_history. = 'H'||strip(&group.)||CATT(OF &exposure.lagc&&j-&exposure.lagc1);
+	             if time_actual=&&i then &name_history. = strip(&group.)||'H'||CATT(OF &exposure.lagc&&j-&exposure.lagc1);
 	          %end;
 	      %end;
 	   run;
@@ -347,7 +353,7 @@
           retain &name_history.;
           length &name_history. $ &&hLength;  /* Set the length of h equal to "hLength" */
 
-	      %do i=1 %to &&numT-1;  /* To number of occasions minus 1 */ 
+	      %do i=1 %to &&numT;  /* To number of occasions */ 
 	          if first.&id. then &name_history. = 'H';   /* First exposure time */
               
               /* Remaining exposure times, concatenated in reverse order */

@@ -3,6 +3,8 @@
 
 /* "Widen" Macro */
 
+/* Successfully passed testWiden tests on 26 June 2019 */
+
 
 ** Start the widen macro **;
 
@@ -261,13 +263,20 @@
 
 
 	  ** Compare raw data variable list to our exposure weight list **;
-
 	  %if &weight_exposure. ne  AND &weight_exposure. ne NULL %then %do;
           proc IML;
-             %if NOT %eval(&weight_exposure. in(&&rawVarList.)) %then %do;
-                 %put ERROR: The weight_exposure variable is misspelled.;
-                 %ABORT;
+             %LET numWtExpNames = %sysfunc(countw(&weight_exposure., ' '));  /* Count the total number of exposure weights */
+
+	         %do i=1 %to &&numWtExpNames;  
+                 %LET numVar&&i = %scan(&weight_exposure.,&&i, ' ');  /* Grab the individual exposure weights */
              %end;
+
+	         %do i=1 %to &&numWtExpNames.;  /* Check if any individual exposure weight is missing from the raw list */
+                 %if NOT %eval(&&numVar&i in(&&rawVarList.)) %then %do;
+                     %put ERROR: The weight_exposure variable is misspelled.;
+                     %ABORT;
+                 %end;
+	         %end;
           quit;
 	  %end;
 	  
