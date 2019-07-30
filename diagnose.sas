@@ -3,6 +3,8 @@
 
 /* "Diagnose" Macro */
 
+/* Successfully passed testDiagnose tests on 10 July 2019 */
+
 
 ** Start the diagnose macro **;
 

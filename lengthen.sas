@@ -3,6 +3,17 @@
 
 /* "Lengthen" Macro */
 
+/* Updated: 26 June 2019 */
+/* Fixed length issue for history variable (length now based on longest instead of shortest value) */
+
+/* Updated: 1 July 2019 */
+/* For Diagnostic 2 without censoring, used the same subsetting logic as in */
+/* Diagnostic 2 with censoring (i.e., where covariate time > exposure time) */
+
+/* Diagnostics 1 and 3 successfully passed testMakeHistoryTwo tests on 26 June 2019 */
+/* Diagnostic 2 - no censoring successfully passed testMakeHistoryTwo tests on 1 July 2019 */
+
+
 
 ** Start the lengthen macro **;
 
@@ -235,7 +246,7 @@
       CLOSE history_names_dataset;
    quit;
 
- /* proc print data=history_names_dataset;
+  /*proc print data=history_names_dataset;
     run; */
 
 
@@ -746,7 +757,7 @@
    %if &history. ne  AND &history. ne NULL %then %do;  /* History or exposure weight is longest variable */
        data _NULL_;
           set step1;
-	      length_hist = lengthc(&history._&&numTE1.);
+	      length_hist = lengthc(&history._&&numTE.);
           call symput("histLength",length_hist); 
        run;
 
@@ -757,7 +768,7 @@
 	   %else %do;  /* Compare lengths of history and exposure weight, use whichever variable is longer */
 	       data _NULL_;
               set step1;
-	          length_wte = lengthc(&weight_exposure._&&numTE1.);
+	          length_wte = lengthc(&weight_exposure._&&numTE.);
               call symput("wteLength",length_wte); 
            run;
 
@@ -775,7 +786,7 @@
    %if &history. eq  OR &history. eq NULL %then %do;  /* Exposure or exposure weight is longest (required) variable */
        data _NULL_;
           set step1;
-	      length_exp = lengthc(&exposure._&&numTE1.);
+	      length_exp = lengthc(&exposure._&&numTE.);
           call symput("expLength",length_exp); 
        run;
 
@@ -786,7 +797,7 @@
 	   %else %do;   /* Compare lengths of exposure and exposure weight, use whichever variable is longer */
 	       data _NULL_;
               set step1;
-	          length_wte = lengthc(&weight_exposure._&&numTE1.);
+	          length_wte = lengthc(&weight_exposure._&&numTE.);
               call symput("wteLength",length_wte); 
            run;
 
@@ -1283,7 +1294,7 @@
       set step4split;
 
 	  %if &&censor_ ne  %then %do;
-	     if trim(&&censor_.) eq '1' then delete;  /* Remove censored observations */
+	     if strip(&&censor_.) eq '1' then delete;  /* Remove censored observations */
 	  %end;
 
 	  if missing(&id.) OR missing(time_exposure) OR missing(&&exposure) OR missing(name_cov) OR 
@@ -1394,18 +1405,38 @@
     
     
     
-    ** STEP 6: Subset to observations with time_exposure >= time_covariate **;
-
-    data step6a;
-       set step5;
-       time_exposure_num = input(time_exposure, 8.);   
-       time_covariate_num = input(time_covariate, 8.);
-    run;  
+    ** STEP 6, if Diagnostic 1 or 3: **;
+    ** Subset to observations with time_exposure >= time_covariate **;
+    %if &diagnostic. eq 1 OR &diagnostic. eq 3 %then %do;
+       data step6a;
+          set step5;
+          time_exposure_num = input(time_exposure, 8.);   
+          time_covariate_num = input(time_covariate, 8.);
+       run;  
     
-    data step6b;
-       set step6a;
-       if time_exposure_num>=time_covariate_num;  /* Use numeric times for this step */
-    run;
+       data step6b;
+          set step6a;
+          if time_exposure_num>=time_covariate_num;  /* Use numeric times for this step */
+       run;
+    %end;
+    
+    
+    ** STEP 6, if Diagnostic 2: **;
+    ** Subset to observations with time_covariate > time_exposure **;
+    %if &diagnostic. eq 2 %then %do;
+       data step6a;
+          set step5;
+          time_exposure_num = input(time_exposure, 8.);
+          time_covariate_num = input(time_covariate, 8.);
+       run;
+       
+       data step6b;
+          set step6a;
+          if time_covariate_num>time_exposure_num;  /* Use numeric times for this step */ 
+       run;
+    %end;
+    
+    
     
     
     ** STEP 7: Sort the STEP6b data set by name_cov, &id., time_exposure_num, time_covariate_num, &&history_ **;
@@ -1495,7 +1526,7 @@
    %if &history. ne  AND &history. ne NULL %then %do;  /* History or exposure weight is longest variable */
        data _NULL_;
           set step1;
-	      length_hist = lengthc(&history._&&numTE1.);
+	      length_hist = lengthc(&history._&&numTE.);
           call symput("histLength",length_hist); 
        run;
 
@@ -1506,7 +1537,7 @@
 	   %else %do;   /* Compare lengths of history and exposure weight, use whichever variable is longer */
 	       data _NULL_;
               set step1;
-	          length_wte = lengthc(&weight_exposure._&&numTE1.);
+	          length_wte = lengthc(&weight_exposure._&&numTE.);
               call symput("wteLength",length_wte); 
            run;
 
@@ -1524,7 +1555,7 @@
    %if &history. eq  OR &history. eq NULL %then %do;  /* Exposure or exposure weight is longest (required) variable */
        data _NULL_;
           set step1;
-	      length_exp = lengthc(&exposure._&&numTE1.);
+	      length_exp = lengthc(&exposure._&&numTE.);
           call symput("expLength",length_exp); 
        run;
 
@@ -1535,7 +1566,7 @@
 	   %else %do;   /* Compare lengths of exposure and exposure weight, use whichever variable is longer */
 	       data _NULL_;
               set step1;
-	          length_wte = lengthc(&weight_exposure._&&numTE1.);
+	          length_wte = lengthc(&weight_exposure._&&numTE.);
               call symput("wteLength",length_wte); 
            run;
 
@@ -2117,7 +2148,7 @@
       set step4out;
 
 	  %if &&censor_ ne  %then %do;
-	     if trim(&&censor_.) eq '1' then delete;  /* Remove censored observations */
+	     if strip(&&censor_.) eq '1' then delete;  /* Remove censored observations */
 	  %end;
 
 	  if missing(&id.) OR missing(time_exposure) OR missing(&&exposure) OR missing(name_cov) OR 
@@ -2243,6 +2274,7 @@
     run;
     
     
+    
     ** STEP 7: Sort the STEP6b data set by name_cov, &id., time_exposure_num, time_covariate_num, &&history_ **;
 
     proc sort data=step6b out=step6c;
@@ -2279,7 +2311,7 @@
 
        %if &output. ne  AND &output. ne NULL %then %do;
             proc datasets library=work nolist;
-	           save &input. &output. &&save.;
+	           save &input. &output. &&save. step4out step5 step6a step6b step6c step6ctest step6ctest2 step7;
 	        run;
 	        quit;
         %end;

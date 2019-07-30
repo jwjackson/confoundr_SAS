@@ -3,6 +3,8 @@
 
 /* "Omit History" Macro */
 
+/* Successfully passed testOmitHistory tests on 10 July 2019 */
+
 
 ** Start the omit_history macro **;
 
