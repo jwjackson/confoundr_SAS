@@ -10,9 +10,15 @@
 /* For Diagnostic 2 without censoring, used the same subsetting logic as in */
 /* Diagnostic 2 with censoring (i.e., where covariate time > exposure time) */
 
-/* Diagnostics 1 and 3 successfully passed testMakeHistoryTwo tests on 26 June 2019 */
-/* Diagnostic 2 - no censoring successfully passed testMakeHistoryTwo tests on 1 July 2019 */
+/* Updated: 30 July 2019 */
+/* For Diagnostic 2 with censoring, aligned censoring indicator with */
+/* covariate time (instead of exposure time) */
 
+
+/* Diagnostics 1 and 3 successfully passed testLengthenSingle tests on 26 June 2019 */
+/* Diagnostic 2 successfully passed testLengthenSingle tests on 30 July 2019 */
+
+/* Diagnostics 1, 2, and 3 successfully passed testLengthenJoint tests on 30 July 2019 */
 
 
 ** Start the lengthen macro **;
@@ -1631,27 +1637,16 @@
 	  %end;
 
 
-	  %if &censor. ne  AND &censor. ne NULL %then %do;
-	      %if &diagnostic. eq 1 OR &diagnostic. eq 3 %then %do;
-	          array cens[&&numTE] &&censorList;  /* Set up the censoring indicator array */
+	 * %if &censor. ne  AND &censor. ne NULL %then %do;
+	 *     array cens[&&numTC] &&censorList;  /* Set up the censoring indicator array */
 
-              do i=1 to dim(cens);
-	             value_exp = left(put(cens[i],&&hLength..));  /* Ensure that value_exp is a left-aligned character variable */ 
-	             wideName_exp=VNAME(cens[i]);  /* Get the column names for the censoring indicators */
-	             output;
-              end;
-	      %end;
-
-		  %if &diagnostic. eq 2 %then %do;
-	          array cens[&&numTC] &&censorList;  /* Set up the censoring indicator array */
-
-              do i=1 to dim(cens);
-	             value_exp = left(put(cens[i],&&hLength..));  /* Ensure that value_exp is a left-aligned character variable */ 
-	             wideName_exp=VNAME(cens[i]);  /* Get the column names for the censoring indicators */
-	             output;
-              end;
-	      %end;
-      %end;
+     *     do i=1 to dim(cens);
+	 *        value_exp = left(put(cens[i],&&hLength..));  /* Ensure that value_exp is a left-aligned character variable */ 
+	 *        wideName_exp=VNAME(cens[i]);  /* Get the column names for the censoring indicators */
+	 *        output;
+     *     end;
+	      
+     * %end;
 
    run;
 
@@ -2033,10 +2028,10 @@
    run;
 
 
-   ** Merge the step3wide data set back with the censor weights and the wanted covariates **;
+   ** Merge the step3wide data set back with the censor weights, censor indicators, and the wanted covariates **;
 
    data step3full;
-      merge step3wide &input.(keep=&id. &&wantedCovList.);  /* Include wanted covariates plus censor weights (if present) */
+      merge step3wide &input.(keep=&id. &&wantedCovList. &&censorList.);  /* Include wanted covariates plus censor indicators plus censor weights (if present) */
       by &id.;
    run;
 
@@ -2046,11 +2041,11 @@
 
 ** STEP 4 **;
 
-** Transform the step3full data set with respect to the covariates **;
-** and the censor weights, yielding an even longer data set        **;
+** Transform the step3full data set with respect to the covariates,   **;
+** censor weights, and censoring indicators, yielding an even longer data set **;
 
-   data step4(keep=&id. time_exposure &&exposure &&history_ &&weight_exposure_ &&strata_ &&censor_ wideName_cov value_cov);
-      retain &id. time_exposure &&exposure &&history_ &&weight_exposure_ &&strata_ &&censor_ wideName_cov value_cov;  /* Retain proper order of variables */
+   data step4(keep=&id. time_exposure &&exposure &&history_ &&weight_exposure_ &&strata_ /*&&censor_*/ wideName_cov value_cov);
+      retain &id. time_exposure &&exposure &&history_ &&weight_exposure_ &&strata_ /*&&censor_*/ wideName_cov value_cov;  /* Retain proper order of variables */
       set step3full;
 
       %LET totCov = %sysfunc(countw(&&wantedCovList., ' '));  /* Count the total number of wanted covariates and censor weights */
@@ -2061,7 +2056,18 @@
 	     value_cov = cov[i]; 
 	     wideName_cov=VNAME(cov[i]);  /* Get the column names for the covariates */
          output; 
-      end;   
+      end;  
+      
+      
+      
+	 array cens[&&numTC] &&censorList;  /* Set up the censoring indicator array */
+
+     do i=1 to dim(cens);
+	    value_cov = left(put(cens[i],&&hLength..));  /* Ensure that value_exp is a left-aligned character variable */ 
+	    wideName_cov=VNAME(cens[i]);  /* Get the column names for the censoring indicators */
+	    output;
+     end;
+	      
 
    run;
 
@@ -2078,8 +2084,8 @@
 
    ** Separate covariate names into ROOT and TIME variables **;
 
-   data step4split(keep=&id. time_exposure &&exposure &&history_ &&weight_exposure_ &&strata_ &&censor_ name_cov time_covariate value_cov);
-      retain &id. time_exposure &&exposure &&history_ &&weight_exposure_ &&strata_ &&censor_ name_cov time_covariate value_cov;  /* Retain proper order of variables */
+   data step4split(keep=&id. time_exposure &&exposure &&history_ &&weight_exposure_ &&strata_ /*&&censor_*/ name_cov time_covariate value_cov);
+      retain &id. time_exposure &&exposure &&history_ &&weight_exposure_ &&strata_ /*&&censor_*/ name_cov time_covariate value_cov;  /* Retain proper order of variables */
       set step4sort;
 
 	  name_cov=scan(wideName_cov,1,'_');  /* Extract characters before underscore and set equal to "name" */
@@ -2087,16 +2093,22 @@
    run;
 
 
-   ** Create separate data sets for covariates and censor weights **;
+   ** Create separate data sets for covariates, censor indicators, and censor weights **;
 
    data longCov;  /* Covariate data */
       set step4split;
 	  if name_cov eq "&&weight_censor." then delete;
+	  if name_cov eq "&&censor." then delete;
    run;
 
    data longCensWt;  /* Censor weight data */
       set step4split;
 	  if name_cov ne "&&weight_censor." then delete;
+   run;
+   
+   data longCensInd;  /* Censor indicator data */
+      set step4split;
+	  if name_cov ne "&&censor." then delete;
    run;
 
 
@@ -2104,20 +2116,49 @@
    ** Widen the longCensWt data set to line up the censoring weights with the covariate times **;
 
    proc sort data=longCensWt out=longCensWtSort;
-      by &id. time_exposure &&exposure &&history_ &&weight_exposure_ &&strata_ &&censor_ time_covariate;
+      by &id. time_exposure &&exposure &&history_ &&weight_exposure_ &&strata_ /*&&censor_*/ time_covariate;
    run;
 
    proc transpose data=longCensWtSort out=censWtWide(drop=_NAME_);
-      by &id. time_exposure &&exposure &&history_ &&weight_exposure_ &&strata_ &&censor_ time_covariate;
+      by &id. time_exposure &&exposure &&history_ &&weight_exposure_ &&strata_ /*&&censor_*/ time_covariate;
       id name_cov;
       var value_cov;
+   run;
+   
+   
+   ** Widen the longCensInd data set to line up the censoring indicators with the covariate times **;
+
+   proc sort data=longCensInd out=longCensIndSort;
+      by &id. time_exposure &&exposure &&history_ &&weight_exposure_ &&strata_ /*&&censor_*/ time_covariate;
+   run;
+
+   proc transpose data=longCensIndSort out=censIndWide(drop=_NAME_);
+      by &id. time_exposure &&exposure &&history_ &&weight_exposure_ &&strata_ /*&&censor_*/ time_covariate;
+      id name_cov;
+      var value_cov;
+   run;
+   
+   
+   ** Merge the censWtWide and censIndWide data sets together **;
+   
+   proc sort data=censWtWide out=censWtWideSort;
+      by &id. time_covariate time_exposure;
+   run;
+   
+   proc sort data=censIndWide out=censIndWideSort;
+      by &id. time_covariate time_exposure;
+   run;
+   
+   data censWtIndWide;
+      merge censWtWideSort censIndWideSort;
+      by &id. time_covariate time_exposure;
    run;
 
 
 
-   ** Merge the censWtWide data set back with the longCov data set **;
+   ** Merge the censWtIndWide data set back with the longCov data set **;
 
-   proc sort data=censWtWide out=censWideSort;
+   proc sort data=censWtIndWide out=censWideSort;
       by &id. time_covariate time_exposure;
    run;
 
@@ -2311,7 +2352,7 @@
 
        %if &output. ne  AND &output. ne NULL %then %do;
             proc datasets library=work nolist;
-	           save &input. &output. &&save. step4out step5 step6a step6b step6c step6ctest step6ctest2 step7;
+	           save &input. &output. &&save.;
 	        run;
 	        quit;
         %end;

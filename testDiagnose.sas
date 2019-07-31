@@ -1,6 +1,8 @@
 /* Erin Schnellinger */
 /* 14 April 2019 */
-/* Last Modified: 24 May 2019 */
+
+/* Last Modified: 10 July 2019 */
+/* Updated name of history variable to match that in diagnose */
 
 /* Program to test the %diagnose() SAS Macro */
 
@@ -81,8 +83,8 @@ run;
 %LET name_cov = l m n o p l m n l m n l m n l m n l m n l m n;
 %LET time_exposure = 0 0 0 0 0 1 1 1 2 2 2 2 2 2 1 1 1 2 2 2 2 2 2;
 %LET time_covariate = 0 0 0 0 0 1 1 1 2 2 2 2 2 2 1 1 1 2 2 2 2 2 2;
-%LET D = 0.026093 0.217244 0.172947 0.341950 0.242385 0.214185 0.156257;
-%LET SMD = 0.055902 0.469622 0.372957 0.746330 0.512765 0.438246 0.366016;
+%LET D = 0.026093 0.217244 0.172947 0.34195 0.242385 0.214185 0.156257;
+%LET SMD = 0.055902 0.469622 0.372957 0.74633 0.512765 0.438246 0.366016;
 %LET N = 1000 511 282 193 489 169 203;
 %LET Nexp = 489 209 85 110 265 80 141;	
 
@@ -158,14 +160,14 @@ quit;
    %end;
    
    
-/* Compare haone in df_twdy_d and true list */
+/* Compare history in df_twdy_d and true list */
 proc sql noprint;                              
- select haone into :df_twdy_d_haone_List separated by ' '
+ select H into :df_twdy_d_haone_List separated by ' '
  from df_twdy_d;
 quit;
 %put df_twdy_d_haone_List = &df_twdy_d_haone_List; 
 
-%if &df_twdy_d_haone_List. ne &haone. %then %do;
+%if &df_twdy_d_haone_List. ne &H. %then %do;
   %put ERROR: At least one history value does not match.;
 %end;
 

@@ -3,6 +3,8 @@
 
 /* "Balance" Macro */
 
+/* Balance successfully passed testBalanceWOApplyScope and */
+/* testBalanceWApplyScope tests on 30 July 2019 */
 
 ** Start the balance macro **;
 

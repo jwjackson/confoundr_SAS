@@ -15,7 +15,7 @@
    
    
 ** Macro options **;
-   options minoperator /* mprint mlogic symbolgen*/;
+   options minoperator mprint mlogic symbolgen;
 
 ** Assign a fileref to each confoundr macro **;
    filename widedef  "/folders/myfolders/confoundr_SAS-master/widen.sas";
@@ -478,7 +478,7 @@ quit;
 );
 
 
-/* Create macro variables with true values for ID=31 */
+/* Create macro variables with true values for ID=1 */
 %LET name_list = uid name_cov time_exposure time_covariate haone a value_cov wax;
 %LET uid = 1 1 1 1 1 1;
 %LET name_cov = l l l m m m;
@@ -691,7 +691,6 @@ quit;
  weight_censor=wsx
 );
 
-
 /* Create macro variables with true values for ID=31 */
 %LET name_list = uid name_cov time_exposure time_covariate haone a value_cov s wax wsx;
 %LET uid = 31 31;
@@ -702,8 +701,10 @@ quit;
 %LET a = 1 1;
 %LET value_cov = 0 0;
 %LET s = 0 0;
-%LET wax = 1.0144498 1.0144498;
-%LET wsx = 0.9751602 0.9751602;
+*%LET wax = 1.0144498 1.0144498;
+%LET wax = 1.01445 1.01445;
+*%LET wsx = 0.9751602 0.9751602;
+%LET wsx = 0.97516 0.97516;
 
 
 
@@ -898,7 +899,7 @@ quit;
 
 /* Compare censor weight (wsx) in df_twdn_t and true list */
 proc sql noprint;                              
- select round(input(wsx,12.), 0.0000001) into :df_twdn_t_wsx_List separated by ' '
+ select round(wsx, 0.0000001) into :df_twdn_t_wsx_List separated by ' '
  from df_twdn_t_ID31;
 quit;
 %put df_twdn_t_wsx_List = &df_twdn_t_wsx_List; 
@@ -1153,7 +1154,8 @@ quit;
 %LET a = 1 1;
 %LET value_cov = 0 0;
 %LET s = 0 0;
-%LET wsx = 0.9751602 0.9751602;
+*%LET wsx = 0.9751602 0.9751602;
+%LET wsx = 0.97516 0.97516;
 %LET e5 = 3 3;
 
 
@@ -1337,7 +1339,7 @@ quit;
 
 /* Compare censor weight (wsx) in df_twdn_t and true list */
 proc sql noprint;                              
- select round(input(wsx,12.), 0.0000001) into :df_twdn_t_wsx_List separated by ' '
+ select round(wsx, 0.0000001) into :df_twdn_t_wsx_List separated by ' '
  from df_twdn_t_ID31;
 quit;
 %put df_twdn_t_wsx_List = &df_twdn_t_wsx_List; 

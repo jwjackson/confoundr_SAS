@@ -3,6 +3,8 @@
 
 /* "Apply_scope" Macro */
 
+/* Balance successfully passed testBalanceWApplyScope tests on 30 July 2019 */
+
 
 ** Start the apply_scope macro **;
 

@@ -1,5 +1,5 @@
 /* Erin Schnellinger */
-/* 24 May 2019 */
+/* 26 June 2019 */
 
 /* Program to test the %balance() SAS Macro with Apply Scope */
 
@@ -77,7 +77,8 @@ run;
  diagnostic=1, 
  approach=none, 
  censoring=no, 
- scope=recent, 
+ scope=recent,
+ recency=1,
  times_exposure=0 1 2, 
  times_covariate= 0 1 2, 
  exposure=a,
@@ -92,8 +93,8 @@ run;
 %LET H = H0 H00 H01 H1 H10 H11;
 %LET time_exposure = 1 2 2 1 2 2;
 %LET time_covariate = 0 1 1 0 1 1;
-%LET D = 0.15209607 0.11621380 0.08740416 0.10434636 0.03426966 0.02276367;
-%LET SMD = 0.33343944 0.27013382 0.17484151 0.22225472 0.06881350 0.04989958;
+%LET D = 0.152096 0.116214 0.087404 0.104346 0.03427 0.022764;
+%LET SMD = 0.333439 0.270134 0.174842 0.222255 0.068814 0.0499;
 %LET N = 511 282 193 489 169 203;
 %LET Nexp = 209 85 110 265 80 141;
 
@@ -315,10 +316,10 @@ quit;
 %LET name_cov = l l l;
 %LET time_exposure = 0 0 1;
 %LET time_covariate = 1 2 2;
-%LET D = 0.2729881 0.1713809 0.2339781;
-%LET SMD = 0.5677838 0.3476923 0.5008615;
-%LET N = 489 372 396;
-%LET Nexp = 1000 847 847;
+%LET D = 0.272988 0.171381 0.233978;
+%LET SMD = 0.567784 0.347692 0.500862;
+%LET N = 1000 847 847;
+%LET Nexp = 489 372 396;
 
 
 ** Generate list of variables in df_twdy_b, and store in a macro variable **;
@@ -527,8 +528,8 @@ quit;
 %LET name_cov = l l l l l l;
 %LET time_exposure = 0 1 1 2 2 2;
 %LET time_covariate = 0 0 1 0 1 2;
-%LET D = 0.02609263 0.12874646 0.22953811 0.07514628 0.07090188 0.21568466;
-%LET SMD = 0.0559015 0.2790701 0.4907190 0.1601581 0.1554678 0.4693983;
+%LET D = 0.026093 0.128747 0.229538 0.075146 0.070902 0.215685;
+%LET SMD = 0.055902 0.27907 0.490719 0.160158 0.155468 0.469398;
 %LET N = 1000 1000 1000 847 847 847;
 
 
@@ -725,8 +726,8 @@ quit;
 %LET E = 1 1 1;
 %LET name_cov = l l l;
 %LET distance = 0 1 2;
-%LET D = 0.15395702 0.10222001 0.07514628;
-%LET SMD = 0.3316477 0.2223884 0.1601581;
+%LET D = 0.153957 0.10222 0.075146;
+%LET SMD = 0.331648 0.222388 0.160158;
 %LET N = 2847 1847 847;
 
 
@@ -900,7 +901,7 @@ quit;
  censoring=no, 
  scope=average,
  average_over=distance,
- periods=0:1 2
+ periods=0:1 2,
  times_exposure=0 1 2, 
  times_covariate= 0 1 2, 
  exposure=a,
@@ -914,8 +915,9 @@ quit;
 %LET period_start = 0 2;
 %LET period_end = 1 2;
 %LET name_cov = l l;
-%LET D = 0.13359949 0.07514628;
-%LET SMD = 0.2886562 0.1601581;
+*%LET D = 0.133599 0.075146;
+%LET D = 0.1336 0.075146;
+%LET SMD = 0.288656 0.160158;
 %LET N = 4694 847;
 
 
@@ -1077,7 +1079,6 @@ quit;
  censoring=no, 
  scope=average,
  average_over=distance,
- periods=0:1 2
  times_exposure=0 1 2, 
  times_covariate= 0 1 2, 
  exposure=a,
@@ -1091,8 +1092,8 @@ quit;
 %LET period_start = 0;
 %LET period_end = 2;
 %LET name_cov = l;
-%LET D = 0.1246643;
-%LET SMD = 0.2690139;
+%LET D = 0.124664;
+%LET SMD = 0.269014;
 %LET N = 5541;
 
 
