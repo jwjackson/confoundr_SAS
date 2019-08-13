@@ -2,9 +2,15 @@
 /* Covariate Balance Project */
 
 /* "Balance" Macro */
-
+	      
 /* Balance successfully passed testBalanceWOApplyScope and */
 /* testBalanceWApplyScope tests on 30 July 2019 */
+
+/* Last Updated: 13 August 2019
+/* Modified SMD calculation so that when only one (but not both) comparator */
+/* and referent groups lack covariate variation, SMD is computed using the */
+/* non-missing standard deviation value. */
+
 
 ** Start the balance macro **;
 
@@ -668,13 +674,25 @@
 
 
 	       if D eq 0 then SMD=0;
-
-	       if D ne 0 and (sd_cov_a eq 0 OR sd_cov_b eq 0) then do;
+	       
+	       /* When only one (but not both) comparator and referent groups */
+	       /* lack covariate variation, compute SMD using the non-missing SD */
+	       if D ne 0 and (sd_cov_a eq 0 AND sd_cov_b ne 0) then do;
+	          SMD = (mean_cov_b-mean_cov_a) / sd_cov_b;  /* Calculate SMD using sd_cov_b */
+	       end;
+	       
+	       if D ne 0 and (sd_cov_a ne 0 AND sd_cov_b eq 0) then do;
+	          SMD = (mean_cov_b-mean_cov_a) / sd_cov_a;  /* Calculate SMD using sd_cov_a */
+	       end;
+	       
+           /* If both SDs are missing, replace SMD with missing */
+	       if D ne 0 and (sd_cov_a eq 0 AND sd_cov_b eq 0) then do;
               SMD = . ;  /* Set SMD to missing */
               PUTLOG "WARNING: SMD values have been set to missing where there is no covariate variation within some level of time-exposure, time-covariate, exposure history, and exposure value; in this case averages for SMD estimates will also appear as missing";  /* Display warning in log */
            end;
-
-           if D ne 0 and (sd_cov_a ne 0 AND sd_cov_b ne 0) then SMD = (mean_cov_b-mean_cov_a) / sqrt(((sd_cov_a**2)*(n_cov_a-1) + (sd_cov_b**2)*(n_cov_b-1))/(n_cov_a+n_cov_b-2));
+           
+           /* If neither SD is missing, compute SMD using pooled SD */
+           if D ne 0 and (sd_cov_a ne 0 AND sd_cov_b ne 0) then SMD = (mean_cov_b-mean_cov_a) / sqrt(((sd_cov_a**2)*(n_cov_a-1) + (sd_cov_b**2)*(n_cov_b-1))/(n_cov_a+n_cov_b-2));  /* Calculate SMD using pooled standard deviation */
 
 
            N = n_cov_a + n_cov_b;
@@ -690,12 +708,12 @@
 
 	       if D eq 0 then SMD=0;
 
-	       if D ne 0 and (sd_cov_a eq 0 OR sd_cov_b eq 0) then do;
+	       if D ne 0 and (sd_cov_a eq 0) then do;
               SMD = . ;  /* Set SMD to missing */
               PUTLOG "WARNING: SMD values have been set to missing where there is no covariate variation within some level of time-exposure, time-covariate, exposure history, and exposure value; in this case averages for SMD estimates will also appear as missing";  /* Display warning in log */
            end;
 
-           if D ne 0 and (sd_cov_a ne 0 AND sd_cov_b ne 0) then SMD = (mean_cov_b-mean_cov_a) / sd_cov_a;
+           if D ne 0 and (sd_cov_a ne 0) then SMD = (mean_cov_b-mean_cov_a) / sd_cov_a;
 
 
            N = n_cov_a + n_cov_b;
@@ -943,14 +961,26 @@
 
 	       if D eq 0 then SMD=0;
 
-	       if D ne 0 and (sd_cov_a eq 0 OR sd_cov_b eq 0) then do;
+	       /* When only one (but not both) comparator and referent groups */
+	       /* lack covariate variation, compute SMD using the non-missing SD */
+	       if D ne 0 and (sd_cov_a eq 0 AND sd_cov_b ne 0) then do;
+	          SMD = (mean_cov_b-mean_cov_a) / sd_cov_b;  /* Calculate SMD using sd_cov_b */
+	       end;
+	       
+	       if D ne 0 and (sd_cov_a ne 0 AND sd_cov_b eq 0) then do;
+	          SMD = (mean_cov_b-mean_cov_a) / sd_cov_a;  /* Calculate SMD using sd_cov_a */
+	       end;
+	       
+           /* If both SDs are missing, replace SMD with missing */
+	       if D ne 0 and (sd_cov_a eq 0 AND sd_cov_b eq 0) then do;
               SMD = . ;  /* Set SMD to missing */
               PUTLOG "WARNING: SMD values have been set to missing where there is no covariate variation within some level of time-exposure, time-covariate, exposure history, and exposure value; in this case averages for SMD estimates will also appear as missing";  /* Display warning in log */
            end;
-
-           if D ne 0 and (sd_cov_a ne 0 AND sd_cov_b ne 0) then SMD = (mean_cov_b-mean_cov_a) / sqrt(((sd_cov_a**2)*(n_cov_a-1) + (sd_cov_b**2)*(n_cov_b-1))/(n_cov_a+n_cov_b-2));
-
-
+           
+           /* If neither SD is missing, compute SMD using pooled SD */
+           if D ne 0 and (sd_cov_a ne 0 AND sd_cov_b ne 0) then SMD = (mean_cov_b-mean_cov_a) / sqrt(((sd_cov_a**2)*(n_cov_a-1) + (sd_cov_b**2)*(n_cov_b-1))/(n_cov_a+n_cov_b-2));  /* Calculate SMD using pooled standard deviation */
+          
+          
            N = n_cov_a + n_cov_b;
 	    run;
 	%end;
@@ -964,12 +994,12 @@
 
 	       if D eq 0 then SMD=0;
 
-	       if D ne 0 and (sd_cov_a eq 0 OR sd_cov_b eq 0) then do;
+	       if D ne 0 and (sd_cov_a eq 0) then do;
               SMD = . ;  /* Set SMD to missing */
               PUTLOG "WARNING: SMD values have been set to missing where there is no covariate variation within some level of time-exposure, time-covariate, exposure history, and exposure value; in this case averages for SMD estimates will also appear as missing";  /* Display warning in log */
            end;
 
-           if D ne 0 and (sd_cov_a ne 0 AND sd_cov_b ne 0) then SMD = (mean_cov_b-mean_cov_a) / sd_cov_a;
+           if D ne 0 and (sd_cov_a ne 0) then SMD = (mean_cov_b-mean_cov_a) / sd_cov_a;
 
 
            N = n_cov_a + n_cov_b;
@@ -1242,12 +1272,25 @@
 
 	       if D eq 0 then SMD=0;
 
-	       if D ne 0 and (sd_cov_a eq 0 OR sd_cov_b eq 0) then do;
+
+	       /* When only one (but not both) comparator and referent groups */
+	       /* lack covariate variation, compute SMD using the non-missing SD */
+	       if D ne 0 and (sd_cov_a eq 0 AND sd_cov_b ne 0) then do;
+	          SMD = (mean_cov_b-mean_cov_a) / sd_cov_b;  /* Calculate SMD using sd_cov_b */
+	       end;
+	       
+	       if D ne 0 and (sd_cov_a ne 0 AND sd_cov_b eq 0) then do;
+	          SMD = (mean_cov_b-mean_cov_a) / sd_cov_a;  /* Calculate SMD using sd_cov_a */
+	       end;
+	       
+           /* If both SDs are missing, replace SMD with missing */
+	       if D ne 0 and (sd_cov_a eq 0 AND sd_cov_b eq 0) then do;
               SMD = . ;  /* Set SMD to missing */
               PUTLOG "WARNING: SMD values have been set to missing where there is no covariate variation within some level of time-exposure, time-covariate, exposure history, and exposure value; in this case averages for SMD estimates will also appear as missing";  /* Display warning in log */
            end;
-
-           if D ne 0 and (sd_cov_a ne 0 AND sd_cov_b ne 0) then SMD = (mean_cov_b-mean_cov_a) / sqrt(((sd_cov_a**2)*(n_cov_a-1) + (sd_cov_b**2)*(n_cov_b-1))/(n_cov_a+n_cov_b-2));
+           
+           /* If neither SD is missing, compute SMD using pooled SD */
+           if D ne 0 and (sd_cov_a ne 0 AND sd_cov_b ne 0) then SMD = (mean_cov_b-mean_cov_a) / sqrt(((sd_cov_a**2)*(n_cov_a-1) + (sd_cov_b**2)*(n_cov_b-1))/(n_cov_a+n_cov_b-2));  /* Calculate SMD using pooled standard deviation */
 
 
            N = n_cov_a + n_cov_b;
@@ -1263,12 +1306,12 @@
 
 	       if D eq 0 then SMD=0;
 
-	       if D ne 0 and (sd_cov_a eq 0 OR sd_cov_b eq 0) then do;
+	       if D ne 0 and (sd_cov_a eq 0) then do;
               SMD = . ;  /* Set SMD to missing */
               PUTLOG "WARNING: SMD values have been set to missing where there is no covariate variation within some level of time-exposure, time-covariate, exposure history, and exposure value; in this case averages for SMD estimates will also appear as missing";  /* Display warning in log */
            end;
 
-           if D ne 0 and (sd_cov_a ne 0 AND sd_cov_b ne 0) then SMD = (mean_cov_b-mean_cov_a) / sd_cov_a;
+           if D ne 0 and (sd_cov_a ne 0) then SMD = (mean_cov_b-mean_cov_a) / sd_cov_a;
 
 
            N = n_cov_a + n_cov_b;
@@ -1535,12 +1578,24 @@
 
 	       if D eq 0 then SMD=0;
 
-	       if D ne 0 and (sd_cov_a eq 0 OR sd_cov_b eq 0) then do;
+	       /* When only one (but not both) comparator and referent groups */
+	       /* lack covariate variation, compute SMD using the non-missing SD */
+	       if D ne 0 and (sd_cov_a eq 0 AND sd_cov_b ne 0) then do;
+	          SMD = (mean_cov_b-mean_cov_a) / sd_cov_b;  /* Calculate SMD using sd_cov_b */
+	       end;
+	       
+	       if D ne 0 and (sd_cov_a ne 0 AND sd_cov_b eq 0) then do;
+	          SMD = (mean_cov_b-mean_cov_a) / sd_cov_a;  /* Calculate SMD using sd_cov_a */
+	       end;
+	       
+           /* If both SDs are missing, replace SMD with missing */
+	       if D ne 0 and (sd_cov_a eq 0 AND sd_cov_b eq 0) then do;
               SMD = . ;  /* Set SMD to missing */
               PUTLOG "WARNING: SMD values have been set to missing where there is no covariate variation within some level of time-exposure, time-covariate, exposure history, and exposure value; in this case averages for SMD estimates will also appear as missing";  /* Display warning in log */
            end;
-
-           if D ne 0 and (sd_cov_a ne 0 AND sd_cov_b ne 0) then SMD = (mean_cov_b-mean_cov_a) / sqrt(((sd_cov_a**2)*(n_cov_a-1) + (sd_cov_b**2)*(n_cov_b-1))/(n_cov_a+n_cov_b-2));
+           
+           /* If neither SD is missing, compute SMD using pooled SD */
+           if D ne 0 and (sd_cov_a ne 0 AND sd_cov_b ne 0) then SMD = (mean_cov_b-mean_cov_a) / sqrt(((sd_cov_a**2)*(n_cov_a-1) + (sd_cov_b**2)*(n_cov_b-1))/(n_cov_a+n_cov_b-2));  /* Calculate SMD using pooled standard deviation */
 
 
            N = n_cov_a + n_cov_b;
@@ -1556,12 +1611,12 @@
 
 	       if D eq 0 then SMD=0;
 
-	       if D ne 0 and (sd_cov_a eq 0 OR sd_cov_b eq 0) then do;
+	       if D ne 0 and (sd_cov_a eq 0) then do;
               SMD = . ;  /* Set SMD to missing */
               PUTLOG "WARNING: SMD values have been set to missing where there is no covariate variation within some level of time-exposure, time-covariate, exposure history, and exposure value; in this case averages for SMD estimates will also appear as missing";  /* Display warning in log */
            end;
 
-           if D ne 0 and (sd_cov_a ne 0 AND sd_cov_b ne 0) then SMD = (mean_cov_b-mean_cov_a) / sd_cov_a;
+           if D ne 0 and (sd_cov_a ne 0) then SMD = (mean_cov_b-mean_cov_a) / sd_cov_a;
 
 
            N = n_cov_a + n_cov_b;
@@ -1833,12 +1888,24 @@
 
 	       if D eq 0 then SMD=0;
 
-	       if D ne 0 and (sd_cov_a eq 0 OR sd_cov_b eq 0) then do;
+	       /* When only one (but not both) comparator and referent groups */
+	       /* lack covariate variation, compute SMD using the non-missing SD */
+	       if D ne 0 and (sd_cov_a eq 0 AND sd_cov_b ne 0) then do;
+	          SMD = (mean_cov_b-mean_cov_a) / sd_cov_b;  /* Calculate SMD using sd_cov_b */
+	       end;
+	       
+	       if D ne 0 and (sd_cov_a ne 0 AND sd_cov_b eq 0) then do;
+	          SMD = (mean_cov_b-mean_cov_a) / sd_cov_a;  /* Calculate SMD using sd_cov_a */
+	       end;
+	       
+           /* If both SDs are missing, replace SMD with missing */
+	       if D ne 0 and (sd_cov_a eq 0 AND sd_cov_b eq 0) then do;
               SMD = . ;  /* Set SMD to missing */
               PUTLOG "WARNING: SMD values have been set to missing where there is no covariate variation within some level of time-exposure, time-covariate, exposure history, and exposure value; in this case averages for SMD estimates will also appear as missing";  /* Display warning in log */
            end;
-
-           if D ne 0 and (sd_cov_a ne 0 AND sd_cov_b ne 0) then SMD = (mean_cov_b-mean_cov_a) / sqrt(((sd_cov_a**2)*(n_cov_a-1) + (sd_cov_b**2)*(n_cov_b-1))/(n_cov_a+n_cov_b-2));
+           
+           /* If neither SD is missing, compute SMD using pooled SD */
+           if D ne 0 and (sd_cov_a ne 0 AND sd_cov_b ne 0) then SMD = (mean_cov_b-mean_cov_a) / sqrt(((sd_cov_a**2)*(n_cov_a-1) + (sd_cov_b**2)*(n_cov_b-1))/(n_cov_a+n_cov_b-2));  /* Calculate SMD using pooled standard deviation */
 
 
            N = n_cov_a + n_cov_b;
@@ -1854,12 +1921,12 @@
 
 	       if D eq 0 then SMD=0;
 
-	       if D ne 0 and (sd_cov_a eq 0 OR sd_cov_b eq 0) then do;
+	       if D ne 0 and (sd_cov_a eq 0) then do;
               SMD = . ;  /* Set SMD to missing */
               PUTLOG "WARNING: SMD values have been set to missing where there is no covariate variation within some level of time-exposure, time-covariate, exposure history, and exposure value; in this case averages for SMD estimates will also appear as missing";  /* Display warning in log */
            end;
 
-           if D ne 0 and (sd_cov_a ne 0 AND sd_cov_b ne 0) then SMD = (mean_cov_b-mean_cov_a) / sd_cov_a;
+           if D ne 0 and (sd_cov_a ne 0) then SMD = (mean_cov_b-mean_cov_a) / sd_cov_a;
 
 
            N = n_cov_a + n_cov_b;
@@ -2124,19 +2191,31 @@
 
 	       if D eq 0 then SMD=0;
 
-	       if D ne 0 and (sd_cov_a eq 0 OR sd_cov_b eq 0) then do;
+	       /* When only one (but not both) comparator and referent groups */
+	       /* lack covariate variation, compute SMD using the non-missing SD */
+	       if D ne 0 and (sd_cov_a eq 0 AND sd_cov_b ne 0) then do;
+	          SMD = (mean_cov_b-mean_cov_a) / sd_cov_b;  /* Calculate SMD using sd_cov_b */
+	       end;
+	       
+	       if D ne 0 and (sd_cov_a ne 0 AND sd_cov_b eq 0) then do;
+	          SMD = (mean_cov_b-mean_cov_a) / sd_cov_a;  /* Calculate SMD using sd_cov_a */
+	       end;
+	       
+           /* If both SDs are missing, replace SMD with missing */
+	       if D ne 0 and (sd_cov_a eq 0 AND sd_cov_b eq 0) then do;
               SMD = . ;  /* Set SMD to missing */
               PUTLOG "WARNING: SMD values have been set to missing where there is no covariate variation within some level of time-exposure, time-covariate, exposure history, and exposure value; in this case averages for SMD estimates will also appear as missing";  /* Display warning in log */
            end;
-
-           if D ne 0 and (sd_cov_a ne 0 AND sd_cov_b ne 0) then SMD = (mean_cov_b-mean_cov_a) / sqrt(((sd_cov_a**2)*(n_cov_a-1) + (sd_cov_b**2)*(n_cov_b-1))/(n_cov_a+n_cov_b-2));
+           
+           /* If neither SD is missing, compute SMD using pooled SD */
+           if D ne 0 and (sd_cov_a ne 0 AND sd_cov_b ne 0) then SMD = (mean_cov_b-mean_cov_a) / sqrt(((sd_cov_a**2)*(n_cov_a-1) + (sd_cov_b**2)*(n_cov_b-1))/(n_cov_a+n_cov_b-2));  /* Calculate SMD using pooled standard deviation */
 
 
            N = n_cov_a + n_cov_b;
 	    run;
 	%end;
 	
-	%else %if &sd_ref. eq no %then %do;  /* Use standard deviation of reference group for SMD calculation */
+	%else %if &sd_ref. eq yes %then %do;  /* Use standard deviation of reference group for SMD calculation */
 	    data temp_table2(rename=(n_cov_b=Nexp));
 	       set temp_table;
 
@@ -2145,12 +2224,12 @@
 
 	       if D eq 0 then SMD=0;
 
-	       if D ne 0 and (sd_cov_a eq 0 OR sd_cov_b eq 0) then do;
+	       if D ne 0 and (sd_cov_a eq 0) then do;
               SMD = . ;  /* Set SMD to missing */
               PUTLOG "WARNING: SMD values have been set to missing where there is no covariate variation within some level of time-exposure, time-covariate, exposure history, and exposure value; in this case averages for SMD estimates will also appear as missing";  /* Display warning in log */
            end;
 
-           if D ne 0 and (sd_cov_a ne 0 AND sd_cov_b ne 0) then SMD = (mean_cov_b-mean_cov_a) / sd_cov_a;
+           if D ne 0 and (sd_cov_a ne 0) then SMD = (mean_cov_b-mean_cov_a) / sd_cov_a;
 
 
            N = n_cov_a + n_cov_b;
