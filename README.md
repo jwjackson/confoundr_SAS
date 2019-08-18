@@ -1,6 +1,5 @@
 # confoundr SAS macros
 
-                             * * * NOTICE: CURRENTLY TESTING AND DE-BUGGING * * * 
   
 INTRODUCTION
 
@@ -52,7 +51,7 @@ To read in the macros, adapt the following code:
   %include diagnos;
 ```
 
-A PDF manual can be downloaded from the main directory. We are also developing a vignette. The draft vignette code (posted) is called 'selectionbias.sas' and is to be used with the 'catie_sas.csv' file, a simulated dataset (not yet posted).
+A PDF manual can be downloaded from the main directory. We have also developed a vignette called 'selectionbias.sas' (posted) which is to be used with the 'catie_sas.csv' file, a simulated dataset (also posted). 
 
 For questions please contact one of us:
 
