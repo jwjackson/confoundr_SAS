@@ -51,7 +51,7 @@ To read in the macros, adapt the following code:
   %include diagnos;
 ```
 
-A PDF manual can be downloaded from the main directory. We have also developed a vignette called 'selectionbias.sas' (posted) which is to be used with the 'catie_sas.csv' file, a simulated dataset (also posted). 
+A PDF manual can be downloaded from the main directory. We have also developed a vignette called 'selectionbias.sas' (posted) which is to be used with the 'catie_sas.csv' file, a simulated dataset (also posted). When following the vignette, note that it is generally better to run each macro call individually, rather than running the entire file at once.
 
 For questions please contact one of us:
 
