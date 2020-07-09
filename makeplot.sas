@@ -415,20 +415,19 @@
    %LET xlabsize = &text_strip_x.;  /* x-axis label size */
    %LET xlabcolor = black;  /* x-axis label color */
    %LET xlabweight = bold;  /* x-axis label weight */
-
+  
    %LET xtxtsize = &text_axis_x.;  /* x-axis text size */
    %LET xtxtcolor = black;  /* x-axis text color */
    %LET xtxtweight = normal;  /* x-axis text weight */
-
+  
 
    %LET ylabsize = &text_strip_y.;  /* y-axis label size */
    %LET ylabcolor = black;  /* y-axis label color */
    %LET ylabweight = bold;  /* y-axis label weight */
-
+  
    %LET ytxtsize = &text_axis_y.;  /* y-axis text size */
    %LET ytxtcolor = black;  /* y-axis text color */
    %LET ytxtweight = normal;  /* y-axis text weight */
-
 
 
    ** Styles for Zero Line and Reference Lines **;
@@ -510,25 +509,25 @@ set Attrs(keep=Value);
 length MarkerStyleElement $11.  markersymbol $15;
 MarkerStyleElement = cats("GraphData", 1+mod(_N_-1, 12)); /* GraphData1, GraphData2, etc */
    
-   if MarkerStyleElement eq "GraphData1" then markersymbol="CircleFilled";
-   if MarkerStyleElement eq "GraphData2" then markersymbol="TriangleFilled";
-   if MarkerStyleElement eq "GraphData3" then markersymbol="DiamondFilled";
-   if MarkerStyleElement eq "GraphData4" then markersymbol="HomeDownFilled";
-   if MarkerStyleElement eq "GraphData5" then markersymbol="SquareFilled";
-   if MarkerStyleElement eq "GraphData6" then markersymbol="StarFilled";
-   if MarkerStyleElement eq "GraphData7" then markersymbol="TriangleDownFilled";
-   if MarkerStyleElement eq "GraphData8" then markersymbol="TriangleRightFilled";
-   if MarkerStyleElement eq "GraphData9" then markersymbol="TriangleLeftFilled";
+   if MarkerStyleElement eq "GraphData1" then markersymbol="Circle";
+   if MarkerStyleElement eq "GraphData2" then markersymbol="Triangle";
+   if MarkerStyleElement eq "GraphData3" then markersymbol="Diamond";
+   if MarkerStyleElement eq "GraphData4" then markersymbol="HomeDown";
+   if MarkerStyleElement eq "GraphData5" then markersymbol="Square";
+   if MarkerStyleElement eq "GraphData6" then markersymbol="Star";
+   if MarkerStyleElement eq "GraphData7" then markersymbol="TriangleDown";
+   if MarkerStyleElement eq "GraphData8" then markersymbol="TriangleRight";
+   if MarkerStyleElement eq "GraphData9" then markersymbol="TriangleLeft";
    if MarkerStyleElement eq "GraphData10" then markersymbol="Asterisk";
-   if MarkerStyleElement eq "GraphData11" then markersymbol="Circle";
-   if MarkerStyleElement eq "GraphData12" then markersymbol="Triangle";
-   if MarkerStyleElement eq "GraphData13" then markersymbol="Diamond";
-   if MarkerStyleElement eq "GraphData14" then markersymbol="HomeDown";
-   if MarkerStyleElement eq "GraphData15" then markersymbol="Square";
-   if MarkerStyleElement eq "GraphData16" then markersymbol="Star";
-   if MarkerStyleElement eq "GraphData17" then markersymbol="TriangleDown";
-   if MarkerStyleElement eq "GraphData18" then markersymbol="TriangleRight";
-   if MarkerStyleElement eq "GraphData19" then markersymbol="TriangleLeft";
+   if MarkerStyleElement eq "GraphData11" then markersymbol="CircleFilled";
+   if MarkerStyleElement eq "GraphData12" then markersymbol="TriangleFilled";
+   if MarkerStyleElement eq "GraphData13" then markersymbol="DiamondFilled";
+   if MarkerStyleElement eq "GraphData14" then markersymbol="HomeDownFilled";
+   if MarkerStyleElement eq "GraphData15" then markersymbol="SquareFilled";
+   if MarkerStyleElement eq "GraphData16" then markersymbol="StarFilled";
+   if MarkerStyleElement eq "GraphData17" then markersymbol="TriangleDownFilled";
+   if MarkerStyleElement eq "GraphData18" then markersymbol="TriangleRightFilled";
+   if MarkerStyleElement eq "GraphData19" then markersymbol="TriangleLeftFilled";
    if MarkerStyleElement eq "GraphData20" then markersymbol="ArrowDown";
    if MarkerStyleElement eq "GraphData21" then markersymbol="Tack";
    if MarkerStyleElement eq "GraphData22" then markersymbol="Tilde";
@@ -577,7 +576,7 @@ run;
                panelby time_cov_label time_exp_label / sort=data layout=lattice novarname colheaderpos=top rowheaderpos=right uniscale=all &&panborder. spacing=&panel_margin_size. headerattrs=(size=&&headsize. color=&&headcolor. weight=&&headweight.) headerbackcolor=&&headbgcolor. &&headborder.; 
                styleattrs backcolor=&&bgcolor. wallcolor=&&wcolor.;
 
-               scatter x=plot_metric y=name_cov / group=EHcat markerattrs=(/*symbol=&&ptsymbol. color=&&ptcolor.*/ size=&&ptsize. &&ptunit.) attrid=EHcat;
+               scatter x=plot_metric y=name_cov / group=EHcat markerattrs=(/*symbol=&&ptsymbol.*/ color=&&ptcolor. size=&&ptsize. &&ptunit.) attrid=EHcat;
 
                colaxis discreteorder=data label="&&axis_title_." labelattrs=(size=&&xlabsize. color=&&xlabcolor. weight=&&xlabweight.) valueattrs=(size=&&xtxtsize. color=&&xtxtcolor. weight=&&xtxtweight.) min=&lbound. max=&ubound.;  /* Display the column axis in ascending order, include title, and set lower and upper bounds */ 
 		       rowaxis discreteorder=data label="Covariate" labelattrs=(size=&&ylabsize. color=&&ylabcolor. weight=&&ylabweight.) valueattrs=(size=&&ytxtsize. color=&&ytxtcolor. weight=&&ytxtweight.);   /* Display the row axis in descending order, and include title */ 
@@ -585,6 +584,8 @@ run;
 		       refline 0 / axis=x lineattrs=(pattern=&&zeroline_symbol. color=&&zeroline_color. thickness=&zeroline_size.);   /* Display zeroline */
 		       refline &refline_limit_a. / axis=x lineattrs=(pattern=&&refline_symbol. color=&&refline_color. thickness=&refline_size.);   /* Display lower reference line */
 		       refline &refline_limit_b. / axis=x lineattrs=(pattern=&&refline_symbol. color=&&refline_color. thickness=&refline_size.);   /* Display upper reference line */
+		      
+		       keylegend / title="";
             run;
 		%end;
 
@@ -607,7 +608,7 @@ run;
                panelby time_cov_label time_exp_label / sort=data layout=lattice rows=&rows_per_page. novarname colheaderpos=top rowheaderpos=right uniscale=all &&panborder. spacing=&panel_margin_size. headerattrs=(size=&&headsize. color=&&headcolor. weight=&&headweight.) headerbackcolor=&&headbgcolor. &&headborder.; 
                styleattrs backcolor=&&bgcolor. wallcolor=&&wcolor.;
 
-               scatter x=plot_metric y=name_cov / group=EHcat markerattrs=(/*symbol=&&ptsymbol. color=&&ptcolor.*/ size=&&ptsize. &&ptunit.) attrid=EHcat;
+               scatter x=plot_metric y=name_cov / group=EHcat markerattrs=(/*symbol=&&ptsymbol. */ color=&&ptcolor. size=&&ptsize. &&ptunit.) attrid=EHcat;
 
                colaxis discreteorder=data label="&&axis_title_." labelattrs=(size=&&xlabsize. color=&&xlabcolor. weight=&&xlabweight.) valueattrs=(size=&&xtxtsize. color=&&xtxtcolor. weight=&&xtxtweight.) min=&lbound. max=&ubound.;  /* Display the column axis in ascending order, include title, and set lower and upper bounds */ 
 		       rowaxis discreteorder=data label="Covariate" labelattrs=(size=&&ylabsize. color=&&ylabcolor. weight=&&ylabweight.) valueattrs=(size=&&ytxtsize. color=&&ytxtcolor. weight=&&ytxtweight.);   /* Display the row axis in descending order, and include title */ 
@@ -615,6 +616,8 @@ run;
 		       refline 0 / axis=x lineattrs=(pattern=&&zeroline_symbol. color=&&zeroline_color. thickness=&zeroline_size.);   /* Display zeroline */
 		       refline &refline_limit_a. / axis=x lineattrs=(pattern=&&refline_symbol. color=&&refline_color. thickness=&refline_size.);   /* Display lower reference line */
 		       refline &refline_limit_b. / axis=x lineattrs=(pattern=&&refline_symbol. color=&&refline_color. thickness=&refline_size.);   /* Display upper reference line */
+		      
+		       keylegend / title="";
             run;
 		%end;
 	%end;
@@ -643,7 +646,7 @@ run;
                panelby time_exp_label time_cov_label / sort=data layout=lattice novarname colheaderpos=top rowheaderpos=right uniscale=all &&panborder. spacing=&panel_margin_size. headerattrs=(size=&&headsize. color=&&headcolor. weight=&&headweight.) headerbackcolor=&&headbgcolor. &&headborder.;
                styleattrs backcolor=&&bgcolor. wallcolor=&&wcolor.;
 
-               scatter x=plot_metric y=name_cov / group=EHcat markerattrs=(/*symbol=&&ptsymbol. color=&&ptcolor.*/ size=&&ptsize. &&ptunit.) attrid=EHcat;
+               scatter x=plot_metric y=name_cov / group=EHcat markerattrs=(/*symbol=&&ptsymbol. */ color=&&ptcolor. size=&&ptsize. &&ptunit.) attrid=EHcat;
 
                colaxis discreteorder=data label="&&axis_title_." labelattrs=(size=&&xlabsize. color=&&xlabcolor. weight=&&xlabweight.) valueattrs=(size=&&xtxtsize. color=&&xtxtcolor. weight=&&xtxtweight.) min=&lbound. max=&ubound.;  /* Display the column axis in ascending order, include title, and set lower and upper bounds */ 
 		       rowaxis discreteorder=data label="Covariate" labelattrs=(size=&&ylabsize. color=&&ylabcolor. weight=&&ylabweight.) valueattrs=(size=&&ytxtsize. color=&&ytxtcolor. weight=&&ytxtweight.);   /* Display the row axis in descending order, and include title */ 
@@ -651,6 +654,8 @@ run;
 		       refline 0 / axis=x lineattrs=(pattern=&&zeroline_symbol. color=&&zeroline_color. thickness=&zeroline_size.);   /* Display zeroline */
 		       refline &refline_limit_a. / axis=x lineattrs=(pattern=&&refline_symbol. color=&&refline_color. thickness=&refline_size.);   /* Display lower reference line */
 		       refline &refline_limit_b. / axis=x lineattrs=(pattern=&&refline_symbol. color=&&refline_color. thickness=&refline_size.);   /* Display upper reference line */
+		      
+		       keylegend / title="";
             run;
 		%end;
 
@@ -673,7 +678,7 @@ run;
                panelby time_exp_label time_cov_label / sort=data layout=lattice rows=&rows_per_page. novarname colheaderpos=top rowheaderpos=right uniscale=all &&panborder. spacing=&panel_margin_size. headerattrs=(size=&&headsize. color=&&headcolor. weight=&&headweight.) headerbackcolor=&&headbgcolor. &&headborder.;
                styleattrs backcolor=&&bgcolor. wallcolor=&&wcolor.;
 
-               scatter x=plot_metric y=name_cov / group=EHcat markerattrs=(/*symbol=&&ptsymbol. color=&&ptcolor.*/ size=&&ptsize. &&ptunit.) attrid=EHcat;
+               scatter x=plot_metric y=name_cov / group=EHcat markerattrs=(/*symbol=&&ptsymbol. */ color=&&ptcolor. size=&&ptsize. &&ptunit.) attrid=EHcat;
 
                colaxis discreteorder=data label="&&axis_title_." labelattrs=(size=&&xlabsize. color=&&xlabcolor. weight=&&xlabweight.) valueattrs=(size=&&xtxtsize. color=&&xtxtcolor. weight=&&xtxtweight.) min=&lbound. max=&ubound.;  /* Display the column axis in ascending order, include title, and set lower and upper bounds */ 
 		       rowaxis discreteorder=data label="Covariate" labelattrs=(size=&&ylabsize. color=&&ylabcolor. weight=&&ylabweight.) valueattrs=(size=&&ytxtsize. color=&&ytxtcolor. weight=&&ytxtweight.);   /* Display the row axis in descending order, and include title */ 
@@ -681,6 +686,8 @@ run;
 		       refline 0 / axis=x lineattrs=(pattern=&&zeroline_symbol. color=&&zeroline_color. thickness=&zeroline_size.);   /* Display zeroline */
 		       refline &refline_limit_a. / axis=x lineattrs=(pattern=&&refline_symbol. color=&&refline_color. thickness=&refline_size.);   /* Display lower reference line */
 		       refline &refline_limit_b. / axis=x lineattrs=(pattern=&&refline_symbol. color=&&refline_color. thickness=&refline_size.);   /* Display upper reference line */
+		      
+		       keylegend / title="";
             run;
 		%end;
 	%end;
@@ -719,7 +726,7 @@ run;
                panelby time_cov_label time_exp_label / sort=data layout=lattice novarname colheaderpos=top rowheaderpos=right uniscale=all &&panborder. spacing=&panel_margin_size. headerattrs=(size=&&headsize. color=&&headcolor. weight=&&headweight.) headerbackcolor=&&headbgcolor. &&headborder.;
 			   styleattrs backcolor=&&bgcolor. wallcolor=&&wcolor.;
 
-               scatter x=plot_metric y=name_cov / group=EHcat markerattrs=(/*symbol=&&ptsymbol. color=&&ptcolor.*/ size=&&ptsize. &&ptunit.) attrid=EHcat;
+               scatter x=plot_metric y=name_cov / group=EHcat markerattrs=(/*symbol=&&ptsymbol. */ color=&&ptcolor. size=&&ptsize. &&ptunit.) attrid=EHcat;
 
                colaxis discreteorder=data label="&&axis_title_." labelattrs=(size=&&xlabsize. color=&&xlabcolor. weight=&&xlabweight.) valueattrs=(size=&&xtxtsize. color=&&xtxtcolor. weight=&&xtxtweight.) min=&lbound. max=&ubound.;  /* Display the column axis in ascending order, include title, and set lower and upper bounds */ 
 		       rowaxis discreteorder=data label="Covariate" labelattrs=(size=&&ylabsize. color=&&ylabcolor. weight=&&ylabweight.) valueattrs=(size=&&ytxtsize. color=&&ytxtcolor. weight=&&ytxtweight.);   /* Display the row axis in descending order, and include title */ 
@@ -727,6 +734,8 @@ run;
 			   refline 0 / axis=x lineattrs=(pattern=&&zeroline_symbol. color=&&zeroline_color. thickness=&zeroline_size.);   /* Display zeroline */
 		       refline &refline_limit_a. / axis=x lineattrs=(pattern=&&refline_symbol. color=&&refline_color. thickness=&refline_size.);   /* Display lower reference line */
 		       refline &refline_limit_b. / axis=x lineattrs=(pattern=&&refline_symbol. color=&&refline_color. thickness=&refline_size.);   /* Display upper reference line */
+		      
+		       keylegend / title="";
             run;
 	    %end;
 
@@ -749,7 +758,7 @@ run;
                panelby time_cov_label time_exp_label / sort=data layout=lattice rows=&rows_per_page. novarname colheaderpos=top rowheaderpos=right uniscale=all &&panborder. spacing=&panel_margin_size. headerattrs=(size=&&headsize. color=&&headcolor. weight=&&headweight.) headerbackcolor=&&headbgcolor. &&headborder.;
 			   styleattrs backcolor=&&bgcolor. wallcolor=&&wcolor.;
 
-               scatter x=plot_metric y=name_cov / group=EHcat markerattrs=(/*symbol=&&ptsymbol. color=&&ptcolor.*/ size=&&ptsize. &&ptunit.) attrid=EHcat;
+               scatter x=plot_metric y=name_cov / group=EHcat markerattrs=(/*symbol=&&ptsymbol. */ color=&&ptcolor. size=&&ptsize. &&ptunit.) attrid=EHcat;
 
                colaxis discreteorder=data label="&&axis_title_." labelattrs=(size=&&xlabsize. color=&&xlabcolor. weight=&&xlabweight.) valueattrs=(size=&&xtxtsize. color=&&xtxtcolor. weight=&&xtxtweight.) min=&lbound. max=&ubound.;  /* Display the column axis in ascending order, include title, and set lower and upper bounds */ 
 		       rowaxis discreteorder=data label="Covariate" labelattrs=(size=&&ylabsize. color=&&ylabcolor. weight=&&ylabweight.) valueattrs=(size=&&ytxtsize. color=&&ytxtcolor. weight=&&ytxtweight.);   /* Display the row axis in descending order, and include title */ 
@@ -757,6 +766,8 @@ run;
 			   refline 0 / axis=x lineattrs=(pattern=&&zeroline_symbol. color=&&zeroline_color. thickness=&zeroline_size.);   /* Display zeroline */
 		       refline &refline_limit_a. / axis=x lineattrs=(pattern=&&refline_symbol. color=&&refline_color. thickness=&refline_size.);   /* Display lower reference line */
 		       refline &refline_limit_b. / axis=x lineattrs=(pattern=&&refline_symbol. color=&&refline_color. thickness=&refline_size.);   /* Display upper reference line */
+		      
+		       keylegend / title="";
             run;
 	    %end;
 	%end;
@@ -783,7 +794,7 @@ run;
                panelby time_exp_label time_cov_label / sort=data layout=lattice novarname colheaderpos=top rowheaderpos=right uniscale=all &&panborder. spacing=&panel_margin_size. headerattrs=(size=&&headsize. color=&&headcolor. weight=&&headweight.) headerbackcolor=&&headbgcolor. &&headborder.;
 			   styleattrs backcolor=&&bgcolor. wallcolor=&&wcolor.;
 
-               scatter x=plot_metric y=name_cov / group=EHcat markerattrs=(/*symbol=&&ptsymbol. color=&&ptcolor.*/ size=&&ptsize. &&ptunit.) attrid=EHcat;
+               scatter x=plot_metric y=name_cov / group=EHcat markerattrs=(/*symbol=&&ptsymbol. */ color=&&ptcolor. size=&&ptsize. &&ptunit.) attrid=EHcat;
 
 			   colaxis discreteorder=data label="&&axis_title_." labelattrs=(size=&&xlabsize. color=&&xlabcolor. weight=&&xlabweight.) valueattrs=(size=&&xtxtsize. color=&&xtxtcolor. weight=&&xtxtweight.) min=&lbound. max=&ubound.;  /* Display the column axis in ascending order, include title, and set lower and upper bounds */ 
 		       rowaxis discreteorder=data label="Covariate" labelattrs=(size=&&ylabsize. color=&&ylabcolor. weight=&&ylabweight.) valueattrs=(size=&&ytxtsize. color=&&ytxtcolor. weight=&&ytxtweight.);   /* Display the row axis in descending order, and include title */ 
@@ -791,6 +802,8 @@ run;
 		       refline 0 / axis=x lineattrs=(pattern=&&zeroline_symbol. color=&&zeroline_color. thickness=&zeroline_size.);   /* Display zeroline */
 		       refline &refline_limit_a. / axis=x lineattrs=(pattern=&&refline_symbol. color=&&refline_color. thickness=&refline_size.);   /* Display lower reference line */
 		       refline &refline_limit_b. / axis=x lineattrs=(pattern=&&refline_symbol. color=&&refline_color. thickness=&refline_size.);   /* Display upper reference line */
+		      
+		       keylegend / title="";
             run;
 	    %end;
 
@@ -813,7 +826,7 @@ run;
                panelby time_exp_label time_cov_label / sort=data layout=lattice rows=&rows_per_page. novarname colheaderpos=top rowheaderpos=right uniscale=all &&panborder. spacing=&panel_margin_size. headerattrs=(size=&&headsize. color=&&headcolor. weight=&&headweight.) headerbackcolor=&&headbgcolor. &&headborder.;
 			   styleattrs backcolor=&&bgcolor. wallcolor=&&wcolor.;
 
-               scatter x=plot_metric y=name_cov / group=EHcat markerattrs=(/*symbol=&&ptsymbol. color=&&ptcolor.*/ size=&&ptsize. &&ptunit.) attrid=EHcat;
+               scatter x=plot_metric y=name_cov / group=EHcat markerattrs=(/*symbol=&&ptsymbol. */ color=&&ptcolor. size=&&ptsize. &&ptunit.) attrid=EHcat;
 
 			   colaxis discreteorder=data label="&&axis_title_." labelattrs=(size=&&xlabsize. color=&&xlabcolor. weight=&&xlabweight.) valueattrs=(size=&&xtxtsize. color=&&xtxtcolor. weight=&&xtxtweight.) min=&lbound. max=&ubound.;  /* Display the column axis in ascending order, include title, and set lower and upper bounds */ 
 		       rowaxis discreteorder=data label="Covariate" labelattrs=(size=&&ylabsize. color=&&ylabcolor. weight=&&ylabweight.) valueattrs=(size=&&ytxtsize. color=&&ytxtcolor. weight=&&ytxtweight.);   /* Display the row axis in descending order, and include title */ 
@@ -821,6 +834,8 @@ run;
 		       refline 0 / axis=x lineattrs=(pattern=&&zeroline_symbol. color=&&zeroline_color. thickness=&zeroline_size.);   /* Display zeroline */
 		       refline &refline_limit_a. / axis=x lineattrs=(pattern=&&refline_symbol. color=&&refline_color. thickness=&refline_size.);   /* Display lower reference line */
 		       refline &refline_limit_b. / axis=x lineattrs=(pattern=&&refline_symbol. color=&&refline_color. thickness=&refline_size.);   /* Display upper reference line */
+		      
+		       keylegend / title="";
             run;
 	    %end;
 	%end;
@@ -851,7 +866,7 @@ run;
                panelby time_cov_label time_exp_label / sort=data layout=lattice novarname colheaderpos=top rowheaderpos=right uniscale=all &&panborder. spacing=&panel_margin_size. headerattrs=(size=&&headsize. color=&&headcolor. weight=&&headweight.) headerbackcolor=&&headbgcolor. &&headborder.;
 			   styleattrs backcolor=&&bgcolor. wallcolor=&&wcolor.;
 
-               scatter x=plot_metric y=name_cov / group=EHcat markerattrs=(/*symbol=&&ptsymbol. color=&&ptcolor.*/ size=&&ptsize. &&ptunit.) attrid=EHcat;
+               scatter x=plot_metric y=name_cov / group=EHcat markerattrs=(/*symbol=&&ptsymbol. */ color=&&ptcolor. size=&&ptsize. &&ptunit.) attrid=EHcat;
 
                colaxis discreteorder=data label="&&axis_title_." labelattrs=(size=&&xlabsize. color=&&xlabcolor. weight=&&xlabweight.) valueattrs=(size=&&xtxtsize. color=&&xtxtcolor. weight=&&xtxtweight.) min=&lbound. max=&ubound.;  /* Display the column axis in ascending order, include title, and set lower and upper bounds */ 
 		       rowaxis discreteorder=data label="Covariate" labelattrs=(size=&&ylabsize. color=&&ylabcolor. weight=&&ylabweight.) valueattrs=(size=&&ytxtsize. color=&&ytxtcolor. weight=&&ytxtweight.);   /* Display the row axis in descending order, and include title */ 
@@ -859,6 +874,8 @@ run;
 			   refline 0 / axis=x lineattrs=(pattern=&&zeroline_symbol. color=&&zeroline_color. thickness=&zeroline_size.);   /* Display zeroline */
 		       refline &refline_limit_a. / axis=x lineattrs=(pattern=&&refline_symbol. color=&&refline_color. thickness=&refline_size.);   /* Display lower reference line */
 		       refline &refline_limit_b. / axis=x lineattrs=(pattern=&&refline_symbol. color=&&refline_color. thickness=&refline_size.);   /* Display upper reference line */
+		      
+		       keylegend / title="";
             run;
 	    %end;
 	%end;
@@ -885,7 +902,7 @@ run;
                panelby time_exp_label time_cov_label / sort=data layout=lattice novarname colheaderpos=top rowheaderpos=right uniscale=all &&panborder. spacing=&panel_margin_size. headerattrs=(size=&&headsize. color=&&headcolor. weight=&&headweight.) headerbackcolor=&&headbgcolor. &&headborder.;
 			   styleattrs backcolor=&&bgcolor. wallcolor=&&wcolor.;
 
-               scatter x=plot_metric y=name_cov / group=EHcat markerattrs=(/*symbol=&&ptsymbol. color=&&ptcolor.*/ size=&&ptsize. &&ptunit.) attrid=EHcat;
+               scatter x=plot_metric y=name_cov / group=EHcat markerattrs=(/*symbol=&&ptsymbol. */ color=&&ptcolor. size=&&ptsize. &&ptunit.) attrid=EHcat;
 
 			   colaxis discreteorder=data label="&&axis_title_." labelattrs=(size=&&xlabsize. color=&&xlabcolor. weight=&&xlabweight.) valueattrs=(size=&&xtxtsize. color=&&xtxtcolor. weight=&&xtxtweight.) min=&lbound. max=&ubound.;  /* Display the column axis in ascending order, include title, and set lower and upper bounds */ 
 		       rowaxis discreteorder=data label="Covariate" labelattrs=(size=&&ylabsize. color=&&ylabcolor. weight=&&ylabweight.) valueattrs=(size=&&ytxtsize. color=&&ytxtcolor. weight=&&ytxtweight.);   /* Display the row axis in descending order, and include title */ 
@@ -893,6 +910,8 @@ run;
 		       refline 0 / axis=x lineattrs=(pattern=&&zeroline_symbol. color=&&zeroline_color. thickness=&zeroline_size.);   /* Display zeroline */
 		       refline &refline_limit_a. / axis=x lineattrs=(pattern=&&refline_symbol. color=&&refline_color. thickness=&refline_size.);   /* Display lower reference line */
 		       refline &refline_limit_b. / axis=x lineattrs=(pattern=&&refline_symbol. color=&&refline_color. thickness=&refline_size.);   /* Display upper reference line */
+		      
+		       keylegend / title="";
             run;
 	    %end;
 	%end;
@@ -914,7 +933,7 @@ run;
            panelby comparison_label / sort=data /*layout=columnlattice*/ columns=&columns_per_page. novarname colheaderpos=top rowheaderpos=right uniscale=all &&panborder. spacing=&panel_margin_size. headerattrs=(size=&&headsize. color=&&headcolor. weight=&&headweight.) headerbackcolor=&&headbgcolor. &&headborder.;
 		   styleattrs backcolor=&&bgcolor. wallcolor=&&wcolor.;
 
-		   scatter x=plot_metric y=name_cov / group=distance markerattrs=(/*symbol=&&ptsymbol. color=&&ptcolor.*/ size=&&ptsize. &&ptunit.) attrid=EHcat;
+		   scatter x=plot_metric y=name_cov / group=distance markerattrs=(/*symbol=&&ptsymbol. */ color=&&ptcolor. size=&&ptsize. &&ptunit.) attrid=EHcat;
 
 		   colaxis discreteorder=data label="&&axis_title_." labelattrs=(size=&&xlabsize. color=&&xlabcolor. weight=&&xlabweight.) valueattrs=(size=&&xtxtsize. color=&&xtxtcolor. weight=&&xtxtweight.) min=&lbound. max=&ubound.;  /* Display the column axis in ascending order, include title, and set lower and upper bounds */ 
 		   rowaxis discreteorder=data label="Covariate" labelattrs=(size=&&ylabsize. color=&&ylabcolor. weight=&&ylabweight.) valueattrs=(size=&&ytxtsize. color=&&ytxtcolor. weight=&&ytxtweight.);   /* Display the row axis in descending order, and include title */ 
@@ -922,6 +941,8 @@ run;
 		   refline 0 / axis=x lineattrs=(pattern=&&zeroline_symbol. color=&&zeroline_color. thickness=&zeroline_size.);   /* Display zeroline */
 		   refline &refline_limit_a. / axis=x lineattrs=(pattern=&&refline_symbol. color=&&refline_color. thickness=&refline_size.);   /* Display lower reference line */
 		   refline &refline_limit_b. / axis=x lineattrs=(pattern=&&refline_symbol. color=&&refline_color. thickness=&refline_size.);   /* Display upper reference line */
+		  
+		   keylegend / title="";
         run;
     %end;
 
@@ -942,7 +963,7 @@ run;
            panelby comparison_label / sort=data /*layout=columnlattice*/ columns=&columns_per_page. novarname colheaderpos=top rowheaderpos=right uniscale=all &&panborder. spacing=&panel_margin_size. headerattrs=(size=&&headsize. color=&&headcolor. weight=&&headweight.) headerbackcolor=&&headbgcolor. &&headborder.;
 		   styleattrs backcolor=&&bgcolor. wallcolor=&&wcolor.;
 
-           scatter x=plot_metric y=name_cov / group=period_id markerattrs=(/*symbol=&&ptsymbol. color=&&ptcolor.*/ size=&&ptsize. &&ptunit.) attrid=EHcat;
+           scatter x=plot_metric y=name_cov / group=period_id markerattrs=(/*symbol=&&ptsymbol. */ color=&&ptcolor. size=&&ptsize. &&ptunit.) attrid=EHcat;
 
 		   colaxis discreteorder=data label="&&axis_title_." labelattrs=(size=&&xlabsize. color=&&xlabcolor. weight=&&xlabweight.) valueattrs=(size=&&xtxtsize. color=&&xtxtcolor. weight=&&xtxtweight.) min=&lbound. max=&ubound.;  /* Display the column axis in ascending order, include title, and set lower and upper bounds */ 
 		   rowaxis discreteorder=data label="Covariate" labelattrs=(size=&&ylabsize. color=&&ylabcolor. weight=&&ylabweight.) valueattrs=(size=&&ytxtsize. color=&&ytxtcolor. weight=&&ytxtweight.);   /* Display the row axis in descending order, and include title */ 
@@ -950,6 +971,8 @@ run;
 		   refline 0 / axis=x lineattrs=(pattern=&&zeroline_symbol. color=&&zeroline_color. thickness=&zeroline_size.);   /* Display zeroline */
 		   refline &refline_limit_a. / axis=x lineattrs=(pattern=&&refline_symbol. color=&&refline_color. thickness=&refline_size.);   /* Display lower reference line */
 		   refline &refline_limit_b. / axis=x lineattrs=(pattern=&&refline_symbol. color=&&refline_color. thickness=&refline_size.);   /* Display upper reference line */
+		  
+		   keylegend / title="";
         run;
 	%end;
 	
@@ -987,7 +1010,7 @@ run;
            panelby comparison_label / sort=data /*layout=columnlattice*/ columns=&columns_per_page. novarname colheaderpos=top rowheaderpos=right uniscale=all &&panborder. spacing=&panel_margin_size. headerattrs=(size=&&headsize. color=&&headcolor. weight=&&headweight.) headerbackcolor=&&headbgcolor. &&headborder.; 
 		   styleattrs backcolor=&&bgcolor. wallcolor=&&wcolor.;
 
-           scatter x=plot_metric y=name_cov / group=EHcat markerattrs=(/*symbol=CircleFilled color=&&ptcolor.*/ size=&&ptsize. &&ptunit.) attrid=EHcat;
+           scatter x=plot_metric y=name_cov / group=EHcat markerattrs=(/*symbol=CircleFilled */ color=&&ptcolor. size=&&ptsize. &&ptunit.) attrid=EHcat;
            *scatter x=plot_metric y=name_cov / group=EHcat markerattrs=(symbol=&&ptsymbol. color=&&ptcolor. size=&&ptsize. &&ptunit.);
 
 		   colaxis discreteorder=data label="&&axis_title_." labelattrs=(size=&&xlabsize. color=&&xlabcolor. weight=&&xlabweight.) valueattrs=(size=&&xtxtsize. color=&&xtxtcolor. weight=&&xtxtweight.) min=&lbound. max=&ubound.;  /* Display the column axis in ascending order, include title, and set lower and upper bounds */ 
@@ -996,6 +1019,8 @@ run;
 		   refline 0 / axis=x lineattrs=(pattern=&&zeroline_symbol. color=&&zeroline_color. thickness=&zeroline_size.);   /* Display zeroline */
 		   refline &refline_limit_a. / axis=x lineattrs=(pattern=&&refline_symbol. color=&&refline_color. thickness=&refline_size.);   /* Display lower reference line */
 		   refline &refline_limit_b. / axis=x lineattrs=(pattern=&&refline_symbol. color=&&refline_color. thickness=&refline_size.);   /* Display upper reference line */
+		  
+		   keylegend / title="";
         run;
 	%end;
 
@@ -1021,7 +1046,7 @@ run;
            panelby comparison_label / sort=data /*layout=columnlattice*/ columns=&panels_per_page. novarname colheaderpos=top rowheaderpos=right uniscale=all &&panborder. spacing=&panel_margin_size. headerattrs=(size=&&headsize. color=&&headcolor. weight=&&headweight.) headerbackcolor=&&headbgcolor. &&headborder.;
 		   styleattrs backcolor=&&bgcolor. wallcolor=&&wcolor.;
 
-           scatter x=plot_metric y=name_cov / group=EHcat markerattrs=(/*symbol=&&ptsymbol. color=&&ptcolor.*/ size=&&ptsize. &&ptunit.) attrid=EHcat;
+           scatter x=plot_metric y=name_cov / group=EHcat markerattrs=(/*symbol=&&ptsymbol.*/ color=&&ptcolor. size=&&ptsize. &&ptunit.) attrid=EHcat;
 
 		   colaxis discreteorder=data label="&&axis_title_." labelattrs=(size=&&xlabsize. color=&&xlabcolor. weight=&&xlabweight.) valueattrs=(size=&&xtxtsize. color=&&xtxtcolor. weight=&&xtxtweight.) min=&lbound. max=&ubound.;  /* Display the column axis in ascending order, include title, and set lower and upper bounds */ 
 		   rowaxis discreteorder=data label="Covariate" labelattrs=(size=&&ylabsize. color=&&ylabcolor. weight=&&ylabweight.) valueattrs=(size=&&ytxtsize. color=&&ytxtcolor. weight=&&ytxtweight.);   /* Display the row axis in descending order, and include title */ 
@@ -1029,6 +1054,8 @@ run;
 		   refline 0 / axis=x lineattrs=(pattern=&&zeroline_symbol. color=&&zeroline_color. thickness=&zeroline_size.);   /* Display zeroline */
 		   refline &refline_limit_a. / axis=x lineattrs=(pattern=&&refline_symbol. color=&&refline_color. thickness=&refline_size.);   /* Display lower reference line */
 		   refline &refline_limit_b. / axis=x lineattrs=(pattern=&&refline_symbol. color=&&refline_color. thickness=&refline_size.);   /* Display upper reference line */
+		  
+		   keylegend / title="";
         run;
 	%end;
 
